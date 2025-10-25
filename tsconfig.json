@@ -11,18 +11,11 @@
     "esModuleInterop": true,
     "allowJs": true,
     "strict": true,
-    "baseUrl": ".",
-    "paths": { "@/*": ["*"] },
-    "skipLibCheck": true,
-    "incremental": true,
-    "plugins": [{ "name": "next" }]
+    "baseUrl": ",",
+    "paths": {
+      "@/*": ["*"]
+    }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "types/**/*.d.ts"         // ← これを追加
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

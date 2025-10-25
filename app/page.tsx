@@ -1,10 +1,9 @@
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { ensureAnonAuth } from '@/lib/firebase';
-import { newSessionId } from '@/utils/id';
+import { db, ensureAnonAuth } from '@/lib/firebase';
 import QR from '@/components/QR';
+import { newSessionId } from '@/utils/id';
 
 export default function Home() {
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -15,7 +14,7 @@ export default function Home() {
   async function createSession() {
     const id = newSessionId();
     await setDoc(doc(db, 'sessions', id), {
-      id,                   // ← ドキュメントにも保存しておく（表示用）
+      id,
       question,
       createdAt: serverTimestamp(),
       owner: null,
@@ -23,11 +22,11 @@ export default function Home() {
     setSessionId(id);
   }
 
-  // 絶対URLの安全な生成：SITE_URLが無ければwindow.originを使う
   const baseOrigin = useMemo(() => {
     if (typeof window !== 'undefined') return window.location.origin;
     return process.env.NEXT_PUBLIC_SITE_URL || '';
   }, []);
+
   const audienceURL = sessionId ? new URL(`/s/${sessionId}`, baseOrigin).toString() : '';
   const presenterURL = sessionId ? new URL(`/p/${sessionId}`, baseOrigin).toString() : '';
 
@@ -38,11 +37,25 @@ export default function Home() {
 
       <div className="space-y-2">
         <label className="block text-sm font-medium">質問</label>
-        <input className="w-full p-3 rounded border" value={question} onChange={e => setQuestion(e.target.value)} />
+        <input
+          className="w-full p-3 rounded border"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+        />
       </div>
 
       <button onClick={createSession} className="px-4 py-2 bg-black text-white rounded">セッションを作成</button>
 
       {sessionId && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">共有用 QR（回答者用）</h
+          <h2 className="text-xl font-semibold">共有用 QR（回答者用）</h2>
+          <QR url={audienceURL} />
+          <div className="text-sm space-y-1">
+            <div>回答者用URL: <a className="underline" href={audienceURL}>{audienceURL}</a></div>
+            <div>登壇者用URL: <a className="underline" href={presenterURL}>{presenterURL}</a></div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}

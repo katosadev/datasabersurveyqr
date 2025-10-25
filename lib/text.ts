@@ -1,38 +1,31 @@
-// lib/text.ts
-import TinySegmenter from 'tiny-segmenter';
+import TinySegmenter from 'tiny-segmenter'
 
-// TinySegmenter の型が any 扱いになる環境向け保険（不要なら削ってOK）
-//const segmenter = new (TinySegmenter as any)();
-const segmenter = new TinySegmenter();
+const segmenter = new (TinySegmenter as any)()
 
 export function normalizeText(s: string) {
   return s
-    // 全角スペース(U+3000)や半角スペース(0x20)の連続を1つに
-    .replace(/[\u3000\u0020]+/g, ' ')
-    // 改行・タブ等の連続も1つの空白に
-    .replace(/[\r\n\t]+/g, ' ')
-    .trim();
+    .replace(/[ 　]+/g, ' ')
+    .replace(/[
+	]+/g, ' ')
+    .trim()
 }
 
 const STOPWORDS_JA = new Set([
-  'の','に','は','を','た','が','で','て','と','し','れ','さ',
-  'ある','いる','も','する','から','な','こと','として','い',
-  'や','など','よう','それ','これ','あれ'
-]);
+  'の','に','は','を','た','が','で','て','と','し','れ','さ','ある','いる','も','する','から','な','こと','として','い','や','など','よう','それ','これ','あれ'
+])
 
 export function tokenizeJa(text: string) {
-  const tokens = segmenter.segment(text) as string[];
+  const tokens = segmenter.segment(text) as string[]
   return tokens
     .map(t => t.trim())
-    .filter(t => t && !STOPWORDS_JA.has(t) && /\p{Letter}/u.test(t));
+    .filter(t => t && !STOPWORDS_JA.has(t) && /\p{Letter}/u.test(t))
 }
 
 export function toWordCounts(texts: string[]) {
-  const counts = new Map<string, number>();
+  const counts = new Map<string, number>()
   for (const t of texts) {
-    const tokens = tokenizeJa(normalizeText(t));
-    for (const w of tokens) counts.set(w, (counts.get(w) ?? 0) + 1);
+    const tokens = tokenizeJa(normalizeText(t))
+    for (const w of tokens) counts.set(w, (counts.get(w) ?? 0) + 1)
   }
-  return Array.from(counts.entries()).map(([text, value]) => ({ text, value }));
+  return Array.from(counts.entries()).map(([text, value]) => ({ text, value }))
 }
-
