@@ -2,7 +2,8 @@
 import TinySegmenter from 'tiny-segmenter';
 
 // TinySegmenter の型が any 扱いになる環境向け保険（不要なら削ってOK）
-const segmenter = new (TinySegmenter as any)();
+//const segmenter = new (TinySegmenter as any)();
+const segmenter = new TinySegmenter();
 
 export function normalizeText(s: string) {
   return s
@@ -34,3 +35,4 @@ export function toWordCounts(texts: string[]) {
   }
   return Array.from(counts.entries()).map(([text, value]) => ({ text, value }));
 }
+
