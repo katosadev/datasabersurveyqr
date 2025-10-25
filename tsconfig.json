@@ -12,10 +12,17 @@
     "allowJs": true,
     "strict": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["*"]
-    }
+    "paths": { "@/*": ["*"] },
+    "skipLibCheck": true,
+    "incremental": true,
+    "plugins": [{ "name": "next" }]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "types/**/*.d.ts"         // ← これを追加
+  ],
   "exclude": ["node_modules"]
 }
