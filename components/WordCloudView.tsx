@@ -1,14 +1,25 @@
-'use client'
-import dynamic from 'next/dynamic'
-import { toWordCounts } from '@/lib/text'
-
-const ReactWordcloud = dynamic(() => import('react-wordcloud'), { ssr: false })
+'use client';
+import { useMemo } from 'react';
+import { toWordCounts } from '@/lib/text';
+import WordCloud from 'react-d3-cloud';
 
 export default function WordCloudView({ texts }: { texts: string[] }) {
-  const words = toWordCounts(texts)
+  const words = useMemo(
+    () => toWordCounts(texts).map(w => ({ text: w.text, value: w.value })),
+    [texts]
+  );
+
   return (
     <div style={{ height: 480, width: '100%' }}>
-      <ReactWordcloud words={words} options={{ rotations: 2, rotationAngles: [0, 0] }} />
+      <WordCloud
+        data={words}
+        width={960}
+        height={480}
+        font="sans-serif"
+        fontSize={(word: any) => 16 + Math.sqrt(word.value) * 10}
+        rotate={0}
+        padding={2}
+      />
     </div>
-  )
+  );
 }
