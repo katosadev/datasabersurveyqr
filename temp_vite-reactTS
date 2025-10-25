@@ -1,3 +1,0 @@
-npm create vite@latest ds-poll -- --template react-ts
-cd ds-poll && npm i
-git init && git add . && git commit -m "init" && gh repo create <org>/<repo> --public --source=. --push
